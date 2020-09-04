@@ -35,7 +35,6 @@ func TestNewConfig(t *testing.T) {
 			},
 			expected: config{
 				TracerProvider: global.TraceProvider(),
-				Tracer:         global.TraceProvider().Tracer(defaultTracerName),
 				Propagators:    global.Propagators(),
 			},
 		},
@@ -46,7 +45,6 @@ func TestNewConfig(t *testing.T) {
 			},
 			expected: config{
 				TracerProvider: global.TraceProvider(),
-				Tracer:         global.TraceProvider().Tracer(defaultTracerName),
 				Propagators:    nil,
 			},
 		},
@@ -55,7 +53,9 @@ func TestNewConfig(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			result := newConfig(tc.opts...)
-			assert.Equal(t, tc.expected, result)
+			assert.Equal(t, tc.expected.TracerProvider, result.TracerProvider)
+			assert.Equal(t, tc.expected.Propagators, result.Propagators)
+			assert.NotNil(t, result.Tracer)
 		})
 	}
 }
